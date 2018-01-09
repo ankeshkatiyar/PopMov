@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PopMov</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="rating_star">Movie Rating Star Image</string>
+    <string name="pop_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Movies</string>
+    <string name="no_internet">Not Conneted to Internet</string>
+    <string name="end_reached">Nothing more to show</string>
+    <string name="no_internets">Not connected to Internet</string>
+</resources>
