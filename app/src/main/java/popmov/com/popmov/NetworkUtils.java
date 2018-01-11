@@ -1,7 +1,6 @@
 package popmov.com.popmov;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ class NetworkUtils {
                 .appendQueryParameter(QUERY_PARAM_API, API_KEY)
                 .appendQueryParameter(QUERY_PARAM_PAGE, Integer.toString(pageNumber))
                 .build();
-        Log.i("URLMovie", uriBuilder.toString());
+
 
         try {
 
