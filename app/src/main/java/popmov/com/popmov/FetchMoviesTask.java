@@ -12,22 +12,24 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import popmov.com.popmov.Models.MoviesModel;
+import popmov.com.popmov.Utils.MoviesJsonUtils;
+import popmov.com.popmov.Utils.NetworkUtils;
+
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class FetchMoviesTask extends AsyncTask<String, ArrayList<MoviesModel>, ArrayList<MoviesModel>> {
 
     private static int mTotalPages = -1;
-    static int currentPageNumber = 1;
-    private Toast toast;
+    public static int currentPageNumber = 1;
     private final static String POPULAR_MOVIES = "popular";
-    private final static String TOP_RATED_MOVIES = "top_rated";
     private final static String TOTAL_PAGES = "total_pages";
     private String movieListCategory = POPULAR_MOVIES;
     private static String currentListCategory = POPULAR_MOVIES;
     static boolean isCancelled = false;
     private int numberOfApiCalls = 1;
     private Context context = null;
-    private MoviesAsyncTaskCompleteListener movieAsyncTaskCompleteListener;
+    private final MoviesAsyncTaskCompleteListener movieAsyncTaskCompleteListener;
     private ArrayList<MoviesModel> mMovieDetailsArrayList = new ArrayList<>();
 
     private boolean isNetworkAvailable() {
@@ -36,7 +38,7 @@ public class FetchMoviesTask extends AsyncTask<String, ArrayList<MoviesModel>, A
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    FetchMoviesTask(Context context, MoviesAsyncTaskCompleteListener<ArrayList<MoviesModel>> listener,String movieListCategory) {
+   public FetchMoviesTask(Context context, MoviesAsyncTaskCompleteListener<ArrayList<MoviesModel>> listener,String movieListCategory) {
         this.context = context;
         this.movieAsyncTaskCompleteListener = listener;
         numberOfApiCalls = 1;
@@ -84,7 +86,7 @@ public class FetchMoviesTask extends AsyncTask<String, ArrayList<MoviesModel>, A
         currentListCategory = moviesListCategory[0];
         if (isNetworkAvailable()) {
             //Calling only 5 pages at a time to reduce the number of API calls
-            while (numberOfApiCalls <= 5) {
+            while (numberOfApiCalls <= 10) {
 
 
                 if (isCancelled) {
@@ -97,6 +99,7 @@ public class FetchMoviesTask extends AsyncTask<String, ArrayList<MoviesModel>, A
                 try {
 
                     movieData = NetworkUtils.getResponseFromHttp(NetworkUtils.buildURL(currentPageNumber, currentListCategory));
+
                     mMovieDetailsArrayList = MoviesJsonUtils.getMoviesDataFromJSON(movieData);
                     if (mTotalPages == -1) {
                         JSONObject jsonObject = new JSONObject(movieData);

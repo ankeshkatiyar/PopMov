@@ -38,18 +38,21 @@
 //
 //
 //}
-package popmov.com.popmov;
+package popmov.com.popmov.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class MoviesModel implements Parcelable {
 
-    private String mMovieName;
-    private String mMovieOverview;
-    private String mMovieRating;
-    private String mMovieReleaseDate;
+    private final String mMovieName;
+    private final String mMovieOverview;
+    private final String mMovieRating;
+    private final String mMovieReleaseDate;
     private String mMoviePosterPath;
+    private final String mMovieId;
+    private byte[] mMovieImage;
+    private int mIsFavMovie ;
 
     private MoviesModel(Parcel parcel){
         mMovieName = parcel.readString();
@@ -57,36 +60,66 @@ public class MoviesModel implements Parcelable {
         mMovieRating = parcel.readString();
         mMovieReleaseDate = parcel.readString();
         mMoviePosterPath = parcel.readString();
+        mMovieId = parcel.readString();
+        mIsFavMovie = parcel.readInt();
+        mMovieImage = new byte[parcel.readInt()];
+        parcel.readByteArray(mMovieImage);
+
+
 
     }
 
-    MoviesModel(String movieName, String movieOverview, String movieRating, String date, String moviePosterPath) {
+    public MoviesModel(String movieId ,String movieName, String movieOverview, String movieRating, String date, String moviePosterPath) {
+        mMovieId = movieId;
         mMovieName = movieName;
         mMovieOverview = movieOverview;
         mMovieRating = movieRating;
         mMovieReleaseDate = date;
         mMoviePosterPath = moviePosterPath;
+
+    }
+   public  MoviesModel(String movieId, String movieName, String movieOverview, String movieRating, String date, byte[] movieImage)  {
+        mMovieId = movieId;
+        mMovieName = movieName;
+        mMovieOverview = movieOverview;
+        mMovieRating = movieRating;
+        mMovieReleaseDate = date;
+        mMovieImage = movieImage;
+        mIsFavMovie = 1;
+
     }
 
-    String getMovieName() {
+
+
+    public String getMovieName() {
         return mMovieName;
     }
 
-    String getMovieOverview() {
+    public String getMovieOverview() {
         return mMovieOverview;
     }
 
-    String getMovieRating() {
+    public String getMovieRating() {
         return mMovieRating;
     }
 
-    String getMovieReleaseDate() {
+    public String getMovieReleaseDate() {
         return mMovieReleaseDate;
     }
 
-    String getMoviePosterPath() {
+    public String getMoviePosterPath() {
         return mMoviePosterPath;
     }
+
+    public String getMovieId() { return  mMovieId; }
+
+    public byte[] getMovieImage() { return  mMovieImage; }
+
+    public int getIsFavMovie(){return  mIsFavMovie;}
+
+    public void setIsFavMovie(){mIsFavMovie = 1;}
+
+    public void setMovieImage(byte[] imageBytes){ mMovieImage = imageBytes;}
 
 
     @Override
@@ -101,18 +134,26 @@ public class MoviesModel implements Parcelable {
         parcel.writeString(mMovieRating);
         parcel.writeString(mMovieReleaseDate);
         parcel.writeString(mMoviePosterPath);
+        parcel.writeString(mMovieId);
+        parcel.writeInt(mIsFavMovie);
+        if (mMovieImage != null) {
+            parcel.writeInt(mMovieImage.length);
+            parcel.writeByteArray(mMovieImage);
+        }
+
 
     }
 
-    public  static final Parcelable.Creator<MoviesModel> CREATOR = new Parcelable.Creator<MoviesModel>(){
+    public static final Creator<MoviesModel> CREATOR = new Creator<MoviesModel>() {
         @Override
-        public MoviesModel createFromParcel(Parcel parcel) {
-            return new MoviesModel(parcel);
+        public MoviesModel createFromParcel(Parcel in) {
+            return new MoviesModel(in);
         }
 
         @Override
-        public MoviesModel[] newArray(int i) {
-            return new MoviesModel[i];
+        public MoviesModel[] newArray(int size) {
+            return new MoviesModel[size];
         }
     };
+
 }

@@ -7,4 +7,6 @@
     <string name="no_internet">Not Conneted to Internet</string>
     <string name="end_reached">Nothing more to show</string>
     <string name="no_internets">Not connected to Internet</string>
+    <string name="fav_movies">Favourite Movies</string>
+    <string name="movie_category">Popular Movies</string>
 </resources>

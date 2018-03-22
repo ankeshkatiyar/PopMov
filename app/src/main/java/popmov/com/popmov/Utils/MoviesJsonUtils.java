@@ -1,4 +1,4 @@
-package popmov.com.popmov;
+package popmov.com.popmov.Utils;
 
 import android.util.Log;
 
@@ -8,8 +8,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import popmov.com.popmov.Models.MoviesModel;
 
-class MoviesJsonUtils {
+
+public class MoviesJsonUtils {
 
     private final static String ERROR_CODE = "status_code";
     private final static int INVALID_API_KEY = 7;
@@ -20,16 +22,16 @@ class MoviesJsonUtils {
     private final static String MOVIE_RELEASE_DATE = "release_date";
     private final static String MOVIE_POSTER_PATH = "poster_path";
     private final static String MOVIE_RESULTS = "results";
-    private final static String TOTAL_PAGES = "total_pages";
-    private static int mTotalNumberOfPages = -1;
+    private final static String MOVIE_ID = "id";
 
 
-    static ArrayList<MoviesModel> getMoviesDataFromJSON(String JSONString) {
+    public static ArrayList<MoviesModel> getMoviesDataFromJSON(String JSONString) {
         String mMovieName;
         String mMovieOverview;
         String mMovieRating;
         String mMovieReleaseDate;
         String mMoviePosterPath;
+        String mMovieId;
 
         ArrayList<MoviesModel> moviesDataList = new ArrayList<>();
 
@@ -64,7 +66,8 @@ class MoviesJsonUtils {
                     mMovieRating = Double.toString(singleMovieJSONObject.getDouble(MOVIE_RATING));
                     mMovieReleaseDate = singleMovieJSONObject.getString(MOVIE_RELEASE_DATE);
                     mMoviePosterPath = singleMovieJSONObject.getString(MOVIE_POSTER_PATH);
-                    moviesDataList.add(new MoviesModel(mMovieName, mMovieOverview, mMovieRating, mMovieReleaseDate, mMoviePosterPath));
+                    mMovieId = singleMovieJSONObject.getString(MOVIE_ID);
+                    moviesDataList.add(new MoviesModel(mMovieId, mMovieName, mMovieOverview, mMovieRating, mMovieReleaseDate, mMoviePosterPath));
                 }
 
             }

@@ -1,4 +1,4 @@
-package popmov.com.popmov;
+package popmov.com.popmov.Utils;
 
 import android.net.Uri;
 
@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-class NetworkUtils {
+public class NetworkUtils {
     private static final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
     private static final String API_KEY = "2ed99c645c2e69c69e8c44ee39de1ad4";
     private static final String QUERY_PARAM_API = "api_key";
@@ -38,8 +38,29 @@ class NetworkUtils {
 
 
     }
+    public static URL buildVideoURL(String movieId,String path){
 
-    static String getResponseFromHttp(URL url) throws IOException {
+        URL urlBuild = null;
+        Uri uriBuilder = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                .appendPath(movieId).appendPath(path)
+                .appendQueryParameter(QUERY_PARAM_API, API_KEY)
+                .build();
+
+
+        try {
+
+
+            return new URL(uriBuilder.toString());
+        } catch (MalformedURLException mfe) {
+            mfe.printStackTrace();
+            return null;
+
+        }
+
+    }
+
+
+    public static String getResponseFromHttp(URL url) throws IOException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream inputStream = httpURLConnection.getInputStream();

@@ -1,6 +1,7 @@
-package popmov.com.popmov;
+package popmov.com.popmov.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,11 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import popmov.com.popmov.Utils.MovieConstants;
+import popmov.com.popmov.Utils.MoviesHelperClass;
+import popmov.com.popmov.Models.MoviesModel;
+import popmov.com.popmov.R;
 
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
@@ -23,16 +29,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         void currentPosition(int position, int totalItems);
     }
 
-    private final MovieListCLickListener mMovieListCLickListener;
+   public  final MovieListCLickListener mMovieListCLickListener;
     private final static String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185/";
     private int mNumberOfMovies;
     private Context context;
-    private static int pos = 2;
-    private ArrayList<MoviesModel> mMovieDetailsArrayList = new ArrayList<>();
+    private final ArrayList<MoviesModel> mMovieDetailsArrayList = new ArrayList<>();
     private MoviePosition moviePosition = null;
 
-    MoviesAdapter(int numberOfMovies, MovieListCLickListener movieListCLickListener, MoviePosition moviePosition) {
-        mNumberOfMovies = numberOfMovies;
+    public MoviesAdapter(MovieListCLickListener movieListCLickListener, MoviePosition moviePosition) {
+        mNumberOfMovies = MovieConstants.NUMBER_OF_MOVIES;
         mMovieListCLickListener = movieListCLickListener;
         this.moviePosition = moviePosition;
     }
@@ -43,21 +48,22 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.movies, parent, false);
         return new MoviesViewHolder(view);
+
     }
 
     @Override
     public void onBindViewHolder(MoviesViewHolder holder, int position) {
-//        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)holder.moviePoster.getLayoutParams();
-//        if(position%2 != 0){
-//            params.leftMargin = 16;
-//        }
-//        else{
-//            params.rightMargin = 16;
-//        }
 
         if (!mMovieDetailsArrayList.isEmpty()) {
+
             String moviePosterPath = MOVIE_POSTER_BASE_URL + mMovieDetailsArrayList.get(position).getMoviePosterPath();
-            Picasso.with(context).load(moviePosterPath).into(holder.moviePoster);
+
+            if(mMovieDetailsArrayList.get(position).getMoviePosterPath() == null){
+                Bitmap bitmap =  MoviesHelperClass.getImage(mMovieDetailsArrayList.get(position).getMovieImage());
+                holder.moviePoster.setImageBitmap(bitmap);
+            }else {
+                Picasso.with(context).load(moviePosterPath).into(holder.moviePoster);
+            }
             moviePosition.currentPosition(position, getItemCount());
 
 
@@ -67,8 +73,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     }
 
     public void addItem(ArrayList<MoviesModel> moviesData) {
-        mNumberOfMovies = mMovieDetailsArrayList.size();
+
+
         mMovieDetailsArrayList.addAll(mMovieDetailsArrayList.size(), moviesData);
+        mNumberOfMovies = mMovieDetailsArrayList.size();
         notifyDataSetChanged();
     }
 
@@ -83,13 +91,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     public class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView moviePoster;
+        private final ImageView moviePoster;
 
         @Override
         public void onClick(View view) {
             int moviePosition = getAdapterPosition();
             if (!(moviePosition < 0)) {
-                mMovieListCLickListener.onMovieClick(mMovieDetailsArrayList.get(moviePosition));
+                try {
+                    mMovieListCLickListener.onMovieClick(mMovieDetailsArrayList.get(moviePosition));
+                }catch (ArrayIndexOutOfBoundsException aiobe){
+                    aiobe.printStackTrace();
+                }
             }
 
 
